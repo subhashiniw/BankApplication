@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd">
+ 
+	<bean id="accountService" class="com.bank.acc.AccountService" scope="prototype">
+		<property name="accountDao" ref="accountDao" />
+		<property name="transactionDao" ref="transactionDao" />
+	</bean>
+	 
+	<bean id="accountDao" class="com.bank.acc.AccountDao">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+	
+	<bean id="transactionDao" class="com.bank.tran.TransactionDao">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+	 
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="pooledDataSource" />
+	</bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="pooledDataSource" />
+	</bean>
+	 
+	<bean id="dbUtil" class="com.bank.DbUtil" init-method="initialize">
+		<property name="dataSource" ref="pooledDataSource" />
+	</bean>
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url" value="jdbc:sqlserver://localhost:1444;DatabaseName=bcare_5_4;responseBuffering=adaptive" />
+		<property name="username" value="sa" />
+		<property name="password" value="bsharp98" />
+	</bean>
+ 
+ 	<tx:annotation-driven transaction-manager="transactionManager" />
+ 	
+ 	<bean id="pooledDataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url" value="jdbc:sqlserver://localhost:1444;DatabaseName=bcare_5_4;responseBuffering=adaptive" />
+		<property name="username" value="sa" />
+		<property name="password" value="bsharp98" />
+	</bean>
+ 	
+</beans>
